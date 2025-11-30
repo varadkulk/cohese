@@ -1,3 +1,2 @@
-# flutter_macos
+# cohese
 
-A new Flutter project.
