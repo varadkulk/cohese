@@ -1,0 +1,65 @@
+name: Flutter CI
+
+on:
+  push:
+    branches-ignore: [release/**]
+
+jobs:
+  ci:
+    name: Flutter CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17.x"
+          distribution: jetbrains
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: Download pub dependencies
+        run: flutter pub get
+
+      - name: Flutter formatting check
+        run: dart format lib test --set-exit-if-changed
+
+      - name: Flutter analyze check
+        run: flutter analyze
+
+      - name: Flutter test
+        run: flutter test
+
+      - name: Check dependency issues
+        run: flutter pub run dependency_validator
+
+  cspell-ci:
+    name: CSpell CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to main repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install CSpell
+        run: npm install -g cspell
+
+      - name: CSpell Linting
+        run: cspell lib/* --no-progress

@@ -1,0 +1,1 @@
+dart pub run import_sorter:main lib/* test/* && dart format lib test
