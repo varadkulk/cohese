@@ -12,6 +12,7 @@ dependencies:
   macos_ui: ^2.2.2
 
 dev_dependencies:
+  dependency_validator: ^5.0.3
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
